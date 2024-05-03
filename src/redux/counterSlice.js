@@ -11,8 +11,9 @@ export const counterSlice = createSlice({
       // state.totalCount = await res.totalCount
       // state.value = ["wdsd","Dsdsd","Dsdsd"]
     },
-    decrement: (state) => {
-      state.value -= 1
+    updateList: (state,action) => {
+      console.log("exp filter",action)
+      state.jobList = action.payload
     },
     incrementByAmount: (state, action) => {
       state.jobList = [...state.jobList, ...action.payload.jobs];
@@ -22,6 +23,6 @@ export const counterSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } = counterSlice.actions
+export const { increment, incrementByAmount,updateList } = counterSlice.actions
 
 export default counterSlice.reducer

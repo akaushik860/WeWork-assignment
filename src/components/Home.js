@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Select from "react-select";
 import { useState } from "react";
 // import { decrement, increment } from './counterSlice'
-import { increment, incrementByAmount } from "../redux/counterSlice";
+import { increment, incrementByAmount,updateList } from "../redux/counterSlice";
 import { UseSelector, useDispatch, useSelector } from "react-redux";
 import { UseDispatch } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -39,6 +39,7 @@ const Home = () => {
     dispatch(incrementByAmount(obj));
     setPage((page) => page + 10);
   }
+ 
   const JobsList = useSelector((state) => state.counter.jobList);
   console.log("Redux data", JobsList);
   useEffect(() => {
@@ -80,8 +81,7 @@ const Home = () => {
   ];
   const remoteOptions = [
     { value: "remote", label: "Remote" },
-    { value: "hybrid", label: "Hybrid" },
-    { value: "office", label: "In-office" },
+    { value: "office", label: "On-Site" },
   ];
   const rolesOptions = [
     { value: "backend", label: "Backend" },
@@ -97,14 +97,42 @@ const Home = () => {
     { value: "hr", label: "HR" },
     { value: "finance", label: "Finance" },
   ];
+  function expFilter(event){
+    let exp = parseInt(event.value)
+    const filteredData = JobsList.filter((job)=> exp<=job?.minExp )
+    dispatch(updateList(filteredData))
+  }
+  function payFilter(event){
+    let sal = parseInt(event.value)
+    const filteredData = JobsList.filter((job)=> sal<=job?.minJdSalary || job?.maxJdSalary <=sal )
+    dispatch(updateList(filteredData))
+  }
+  function rolesFilter(event){
+    let exp = (event.value)
+    const filteredData = JobsList.filter((job)=> job?.jobRole.toLowerCase().includes(exp.toLowerCase()) )
+    dispatch(updateList(filteredData))
+  }
+  function remoteFilter(event){
+    let exp = (event.value)
+    const filteredData = JobsList.filter((job)=> exp === "remote" ? job?.location === "remote" : job?.location !== "remote" )
+    dispatch(updateList(filteredData))
+  }
+  function nameFilter(event){
+    const filteredData = JobsList.filter((job)=> job?.companyName.toLowerCase().includes(event.toLowerCase()))
+    dispatch(updateList(filteredData))
+  }
+  function locFilter(event){
+    const filteredData = JobsList.filter((job)=> job?.location.toLowerCase().includes(event.toLowerCase()))
+    dispatch(updateList(filteredData))
+  }
   const selectedOption = null;
   return (
     <div className="mainBox">
       <div className="filterMainBox">
         <div className="allfilters">
           <Select
-            value={selectedOption}
-            // onChange={this.handleChange}
+            // value={selectedOption}
+            onChange={(e)=>expFilter(e)}
             placeholder="Experience"
             options={minExperience}
           />
@@ -118,6 +146,7 @@ const Home = () => {
               color: "black",
             }}
             type="text"
+            onChange={(e)=>nameFilter(e.target.value)}
             placeholder="Company Name"
           ></input>
           <input
@@ -134,7 +163,7 @@ const Home = () => {
           ></input>
           <Select
             value={selectedOption}
-            // onChange={this.handleChange}
+            onChange={(e)=>remoteFilter(e)}
             placeholder="Remote"
             options={remoteOptions}
           />
@@ -152,14 +181,14 @@ const Home = () => {
           ></input>
           <Select
             value={selectedOption}
-            // onChange={this.handleChange}
+            onChange={(e)=>rolesFilter(e)}            
             placeholder="Roles"
             id="filterbox"
             options={rolesOptions}
           />
           <Select
             // value={selectedOption}
-            // onChange={this.handleChange}
+            onChange={(e)=>payFilter(e)}
             placeholder="Min Base Pay"
             options={minPayOptions}
           />
