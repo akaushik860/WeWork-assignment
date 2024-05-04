@@ -36,7 +36,7 @@
     transform: rotate(360deg);
   }
 }
-.mainBox{
+.mainBox {
   margin: 20px 40px;
 }
 .jobCardsBox {
@@ -48,9 +48,11 @@
   display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(360px, 3fr)) !important;
   gap: 20px !important;
+  row-gap: 50px !important;
   overflow-y: hidden;
+  padding: 20px 15px;
 }
-.infinite-scroll-component::-webkit-scrollbar{
+.infinite-scroll-component::-webkit-scrollbar {
   display: none;
 }
 .jobCard {
@@ -100,9 +102,8 @@
   line-height: 1.5;
   margin: 0;
 }
-.jobCard-title p{
+.jobCard-title p {
   margin: 0;
-
 }
 .jobCard-salary p {
   font-weight: 400;
@@ -164,16 +165,35 @@
   justify-content: center;
   gap: 5px;
 }
-.allfilters{
+.allfilters {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 7fr));
   gap: 10px;
 }
-#filterbox{
-  min-width: 150px
+#filterbox {
+  min-width: 150px;
+}
+.resetbtn {
+  background-color: #04aa6d; /* Green */
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
 }
 @media screen and (max-width: 768px) {
-  .mainBox{
-    margin: 10px 15px;
+  .mainBox {
+    margin: 10px 5px;
+  }
+  .jobCard {
+    max-width: 300px;
+  }
+  .filterMainBox {
+    padding: 5px 15px;
   }
 }

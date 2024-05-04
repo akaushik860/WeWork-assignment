@@ -1,24 +1,17 @@
 import React, { useEffect } from "react";
 import Select from "react-select";
 import { useState } from "react";
-// import { decrement, increment } from './counterSlice'
-import {
-  increment,
-  incrementByAmount,
-  updateList,
-} from "../redux/counterSlice";
-import { UseSelector, useDispatch, useSelector } from "react-redux";
-import { UseDispatch } from "react-redux";
+import { addNewJob, updateList } from "../redux/JobSlice";
+import { useDispatch, useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const Home = () => {
-  const ar = [1, 2, 3, 4, 5, 6];
   const [jobData, setJobData] = useState([]);
   const dispatch = useDispatch();
   const [isFilter, setIsFilter] = useState(false);
   const [page, setPage] = useState(0);
-  const JobsList = useSelector((state) => state.counter.jobList);
-  const filterData = useSelector((state) => state.counter.filterData);
+  const JobsList = useSelector((state) => state.JobData.jobList);
+  const filterData = useSelector((state) => state.JobData.filterData);
   const [filtersObject, setFiltersObject] = useState({
     minExp: null,
     compName: null,
@@ -28,20 +21,8 @@ const Home = () => {
     role: null,
     minPay: null,
   });
-  //   function debounce(func, delay) {
-  //     let timer;
-  //     return function() {
-  //         const context = this;
-  //         const args = arguments;
-  //         clearTimeout(timer);
-  //         timer = setTimeout(() => {
-  //             func.apply(context, args);
-  //         }, delay);
-  //     };
-  // }
   async function getJobData() {
     const myHeaders = new Headers();
-    console.log("Inside the function ", page);
     myHeaders.append("Content-Type", "application/json");
     const body = JSON.stringify({
       limit: 10,
@@ -68,86 +49,96 @@ const Home = () => {
             .includes(filtersObject.location.toLowerCase())
         );
       }
-      if(filtersObject.minExp){
-         finalData = finalData.filter((job) => filtersObject.minExp <= job?.minExp);
+      if (filtersObject.minExp) {
+        finalData = finalData.filter(
+          (job) => filtersObject.minExp <= job?.minExp
+        );
       }
-      if(filtersObject.compName){
+      if (filtersObject.compName) {
         finalData = finalData.filter((job) =>
-        job?.companyName.toLowerCase().includes(filtersObject.compName.toLowerCase())
-      );
+          job?.companyName
+            .toLowerCase()
+            .includes(filtersObject.compName.toLowerCase())
+        );
       }
-      if(filtersObject.remote){
+      if (filtersObject.remote) {
         finalData = finalData.filter((job) =>
-        filtersObject.remote === "remote" ? job?.location === "remote" : job?.location !== "remote"
-      );
+          filtersObject.remote === "remote"
+            ? job?.location === "remote"
+            : job?.location !== "remote"
+        );
       }
-      if(filtersObject.role){
-        finalData  = finalData.filter((job) =>
-        job?.jobRole.toLowerCase().includes(filtersObject.role.toLowerCase())
-      );
+      if (filtersObject.role) {
+        finalData = finalData.filter((job) =>
+          job?.jobRole.toLowerCase().includes(filtersObject.role.toLowerCase())
+        );
       }
-      if(filtersObject.minPay){
+      if (filtersObject.minPay) {
         finalData = filterData.filter(
-            (job) => filtersObject.minPay <= job?.minJdSalary || job?.maxJdSalary <= filtersObject.minPay
-          );
+          (job) => filtersObject.minPay <= job?.minJdSalary
+        );
       }
     }
     const obj = {
       jobs: finalData,
       totalCount: res.totalCount,
     };
-    dispatch(incrementByAmount(obj));
+    dispatch(addNewJob(obj));
 
     setPage((page) => page + 10);
   }
-  function applyFilter(){
-    let finalData = JobsList
+  function applyFilter() {
+    let finalData = JobsList;
     if (filtersObject.location) {
-        finalData = finalData.filter((job) =>
-          job?.location
-            .toLowerCase()
-            .includes(filtersObject.location.toLowerCase())
-        );
-      }
-      if(filtersObject.minExp){
-         finalData = finalData.filter((job) => filtersObject.minExp <= job?.minExp);
-      }
-      if(filtersObject.compName){
-        finalData = finalData.filter((job) =>
-        job?.companyName.toLowerCase().includes(filtersObject.compName.toLowerCase())
+      finalData = finalData.filter((job) =>
+        job?.location
+          .toLowerCase()
+          .includes(filtersObject.location.toLowerCase())
       );
-      }
-      if(filtersObject.remote){
-        finalData = finalData.filter((job) =>
-        filtersObject.remote === "remote" ? job?.location === "remote" : job?.location !== "remote"
+    }
+    if (filtersObject.minExp) {
+      finalData = finalData.filter(
+        (job) => filtersObject.minExp <= job?.minExp
       );
-      }
-      if(filtersObject.role){
-        finalData  = finalData.filter((job) =>
+    }
+    if (filtersObject.compName) {
+      finalData = finalData.filter((job) =>
+        job?.companyName
+          .toLowerCase()
+          .includes(filtersObject.compName.toLowerCase())
+      );
+    }
+    if (filtersObject.remote) {
+      finalData = finalData.filter((job) =>
+        filtersObject.remote === "remote"
+          ? job?.location === "remote"
+          : job?.location !== "remote"
+      );
+    }
+    if (filtersObject.role) {
+      finalData = finalData.filter((job) =>
         job?.jobRole.toLowerCase().includes(filtersObject.role.toLowerCase())
       );
-      }
-      if(filtersObject.minPay){
-        finalData = filterData.filter(
-            (job) => filtersObject.minPay <= job?.minJdSalary || job?.maxJdSalary <= filtersObject.minPay
-          );
-      }
-       dispatch(updateList(finalData));
+    }
+    if (filtersObject.minPay) {
+      finalData = filterData.filter(
+        (job) =>
+          filtersObject.minPay <= job?.minJdSalary ||
+          job?.maxJdSalary <= filtersObject.minPay
+      );
+    }
+    dispatch(updateList(finalData));
   }
-  useEffect(()=>{
-   applyFilter();
-  },[filtersObject])
+  useEffect(() => {
+    applyFilter();
+  }, [filtersObject]);
   useEffect(() => {
     if (isFilter) {
       setJobData(filterData);
     } else {
       setJobData(JobsList);
     }
-  }, [JobsList, filterData]);
-  //   useEffect(() => {
-  //     setJobData(JobsList);
-  //   }, [JobsList]);
-  console.log("Redux data", filtersObject);
+  }, [JobsList, filterData, isFilter]);
   useEffect(() => {
     getJobData();
   }, []);
@@ -197,20 +188,13 @@ const Home = () => {
       ...prevFilters,
       [event.key]: exp,
     }));
-    // const filteredData = filterData.filter((job) => exp <= job?.minExp);
-    // dispatch(updateList(filteredData));
   }
   function payFilter(event) {
     setIsFilter(true);
-    let sal = parseInt(event.value);
     setFiltersObject((prevFilters) => ({
       ...prevFilters,
       [event.key]: parseInt(event.value),
     }));
-    // const filteredData = filterData.filter(
-    //   (job) => sal <= job?.minJdSalary || job?.maxJdSalary <= sal
-    // );
-    // dispatch(updateList(filteredData));
   }
   function rolesFilter(event) {
     setIsFilter(true);
@@ -218,11 +202,6 @@ const Home = () => {
       ...prevFilters,
       [event.key]: event.value,
     }));
-    let exp = event.value;
-    // const filteredData = filterData.filter((job) =>
-    //   job?.jobRole.toLowerCase().includes(exp.toLowerCase())
-    // );
-    // dispatch(updateList(filteredData));
   }
   function remoteFilter(event) {
     setIsFilter(true);
@@ -230,11 +209,6 @@ const Home = () => {
       ...prevFilters,
       [event.key]: event.value,
     }));
-    // let exp = event.value;
-    // const filteredData = filterData.filter((job) =>
-    //   exp === "remote" ? job?.location === "remote" : job?.location !== "remote"
-    // );
-    // dispatch(updateList(filteredData));
   }
   function nameFilter(event) {
     setIsFilter(true);
@@ -245,13 +219,23 @@ const Home = () => {
   }
   function locFilter(event) {
     setIsFilter(true);
-    console.log(event);
     setFiltersObject((prevFilters) => ({
       ...prevFilters,
       [event.name]: event.value,
     }));
   }
-  const selectedOption = null;
+  function resetFilters() {
+    setIsFilter(false);
+    setFiltersObject((prevFilters) => ({
+      minExp: null,
+      compName: null,
+      location: null,
+      remote: null,
+      stack: null,
+      role: null,
+      minPay: null,
+    }));
+  }
   return (
     <div className="mainBox">
       <div className="filterMainBox">
@@ -328,14 +312,19 @@ const Home = () => {
         </div>
       </div>
       <br></br>
+      <div>
+        <button className="resetbtn" onClick={() => resetFilters()}>
+          Reset Filters
+        </button>
+      </div>
+      <br></br>
       <div className="jobCardsBox">
         <InfiniteScroll
           dataLength={jobData.length}
           next={getJobData}
           style={{ display: "flex", flexDirection: "column-reverse" }} //To put endMessage and loader to the top.
           hasMore={true}
-          loader={<h2 style={{textAlign:
-        "center"}}>Loading...</h2>}
+          loader={<h2 style={{ textAlign: "center" }}>Loading...</h2>}
           scrollableTarget="jobCardsBox"
         >
           {jobData.map((data) => {

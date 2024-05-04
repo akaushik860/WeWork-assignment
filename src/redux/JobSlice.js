@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export const counterSlice = createSlice({
+export const JobSlice = createSlice({
   name: 'counter',
   initialState: {
     jobList: [],
@@ -8,14 +8,10 @@ export const counterSlice = createSlice({
     totalCount: 0
   },
   reducers: {
-    increment: (state) => {
-      // state.totalCount = await res.totalCount
-      // state.value = ["wdsd","Dsdsd","Dsdsd"]
-    },
     updateList: (state,action) => {
       state.filterData = action.payload
     },
-    incrementByAmount: (state, action) => {
+    addNewJob: (state, action) => {
       state.jobList = [...state.jobList, ...action.payload.jobs];
       state.filterData = [...state.filterData,...action.payload.jobs];
       state.totalCount = action.payload.totalCount
@@ -24,6 +20,6 @@ export const counterSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { increment, incrementByAmount,updateList } = counterSlice.actions
+export const {addNewJob,updateList } = JobSlice.actions
 
-export default counterSlice.reducer
+export default JobSlice.reducer
