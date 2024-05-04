@@ -50,6 +50,9 @@
   gap: 20px !important;
   overflow-y: hidden;
 }
+.infinite-scroll-component::-webkit-scrollbar{
+  display: none;
+}
 .jobCard {
   display: flex !important;
   flex-direction: column !important;
@@ -168,4 +171,9 @@
 }
 #filterbox{
   min-width: 150px
+}
+@media screen and (max-width: 768px) {
+  .mainBox{
+    margin: 10px 15px;
+  }
 }

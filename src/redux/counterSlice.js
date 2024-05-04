@@ -4,6 +4,7 @@ export const counterSlice = createSlice({
   name: 'counter',
   initialState: {
     jobList: [],
+    filterData: [],
     totalCount: 0
   },
   reducers: {
@@ -12,11 +13,11 @@ export const counterSlice = createSlice({
       // state.value = ["wdsd","Dsdsd","Dsdsd"]
     },
     updateList: (state,action) => {
-      console.log("exp filter",action)
-      state.jobList = action.payload
+      state.filterData = action.payload
     },
     incrementByAmount: (state, action) => {
       state.jobList = [...state.jobList, ...action.payload.jobs];
+      state.filterData = [...state.filterData,...action.payload.jobs];
       state.totalCount = action.payload.totalCount
     },
   },
